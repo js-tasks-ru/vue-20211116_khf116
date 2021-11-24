@@ -1,7 +1,8 @@
-// import { createApp } from './vendor/vue.esm-browser.js';
+import { createApp, defineComponent } from './vendor/vue.esm-browser.js';
+
 
 // From https://jsonplaceholder.typicode.com/comments
-const emails = [
+const fetchEmails = [
   'Eliseo@gardner.biz',
   'Jayne_Kuhic@sydney.com',
   'Nikita@garfield.biz',
@@ -29,4 +30,69 @@ const emails = [
   'Isaias_Kuhic@jarrett.net',
 ];
 
-// Требуется создать Vue приложение
+
+
+
+const Root = defineComponent({
+  name: 'Root',
+  // Реактивные данные приложения, его локальное состояние
+  data() {
+    return {
+      emails: null,
+      searchEmails: '',
+    }
+  },
+
+  computed: {
+    // filteredEmail() {
+    //   const searchFilter = (email) =>
+    //     email
+    //       .toLowerCase()
+    //       .includes(this.searchEmails.toLowerCase());
+
+    //   return this.emails.filter(email => searchFilter(email));
+    // }
+
+
+    markedEmails() {
+
+      if (!this.emails) {
+        return null;
+      } 
+
+      const setMarked = (email) => {
+        if (this.searchEmails.length <= 0)
+          return false;
+
+        return email
+          .toLowerCase()
+          .includes(this.searchEmails.toLowerCase());         
+      }
+
+      return this.emails.map(
+        item => ({
+          email: item,
+          marked: setMarked(item) 
+        })
+      );
+    }
+  },
+
+  mounted() {
+    this.emails = fetchEmails;
+  },
+
+
+})
+
+// Создаём новое приложение по корневому компоненту
+const app = createApp(Root);
+
+// Монтируем приложение на странице
+// Возвращается публичный экземпляр корневого компонента
+const vm = app.mount('#app');
+
+// Добавляем vm в глобальные переменные для простой отладки в консоли браузера
+window.vm = vm;
+
+
