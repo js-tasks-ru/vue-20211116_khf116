@@ -22,7 +22,7 @@ export default defineComponent({
 
   computed: {
     convertedToDate() {
-      return new Date(this.date).toLocaleDateString(navigator.language);
+      return new Date(this.date).toISOString().split('T')[0];
     },
 
     convertedToLocalDate() {
