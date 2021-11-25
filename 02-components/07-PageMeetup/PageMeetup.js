@@ -68,7 +68,7 @@ export default defineComponent({
 
       <ui-container v-else-if="fetchStatus === 'error'">
         <ui-alert>
-          Ошибка: {{ fetchError }}
+          {{ fetchError }}
         </ui-alert>
       </ui-container>
 
