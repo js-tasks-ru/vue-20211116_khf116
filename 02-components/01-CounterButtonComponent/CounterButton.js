@@ -13,8 +13,9 @@ export default defineComponent({
 
 
   methods: {
-    setCount(value) {
-      this.$emit('update:count', ++value);
+    setCount() {
+      var newValue = this.count + 1;
+      this.$emit('update:count', newValue);
     },
   },
 
@@ -24,7 +25,7 @@ export default defineComponent({
   template: `
     <button 
       type="button"
-      @click="setCount(this.count)"
+      @click="setCount()"
     >
       {{ count }}
     </button>
