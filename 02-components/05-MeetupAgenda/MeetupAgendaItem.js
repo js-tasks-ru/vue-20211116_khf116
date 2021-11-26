@@ -12,11 +12,11 @@ export default defineComponent({
   },
 
   computed: {
-    getTitle() {
+    Title() {
       return (this.agendaItem.title) ? this.agendaItem.title : agendaItemDefaultTitles[this.agendaItem.type];
     },
 
-    getIcon() {
+    Icon() {
       return "/assets/icons/icon-" + agendaItemIcons[this.agendaItem.type] + ".svg";
     }, 
   }, 
@@ -24,7 +24,7 @@ export default defineComponent({
   template: `
     <div class="agenda-item">
       <div class="agenda-item__col">
-        <img :src="\`\${getIcon}\`" class="icon" alt="key" />
+        <img :src="\`\${Icon}\`" class="icon" alt="key" />
       </div>
 
       <div class="agenda-item__col">
@@ -34,7 +34,7 @@ export default defineComponent({
       <div class="agenda-item__col">
 
         <h3 class="agenda-item__title">
-          {{ getTitle }}
+          {{ Title }}
         </h3>
 
         <p class="agenda-item__talk" v-if="agendaItem.type === 'talk'">
