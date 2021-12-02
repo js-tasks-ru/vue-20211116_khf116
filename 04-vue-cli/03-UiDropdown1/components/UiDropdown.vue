@@ -15,7 +15,7 @@
         type="button"
         @click="buttonClick(item.value)"
       >
-        <ui-icon :icon="item.icon" class="dropdown__icon" v-if="iconExists" />
+        <ui-icon v-if="iconExists" :icon="item.icon" class="dropdown__icon" />
         {{ item.text }}
       </button>
     </div>
@@ -45,6 +45,8 @@ export default {
       require: true,
     },
   },
+
+  emits: ['update:modelValue'],
 
   data() {
     return {
