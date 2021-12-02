@@ -1,28 +1,23 @@
 <template>
   <div class="dropdown" :class="dropdownOpened">
-    <button 
-      type="button" 
-      class="dropdown__toggle"
-      :class="menuClass" 
-      @click="menuClick()"
-    >
-      <ui-icon :icon="icon" class="dropdown__icon" v-if="icon" />
+    <button type="button" class="dropdown__toggle" :class="{ dropdown__toggle_icon: iconExists }" @click="menuClick()">
+      <ui-icon v-if="icon" :icon="icon" class="dropdown__icon" />
       <span>{{ selected }}</span>
     </button>
 
-    <div class="dropdown__menu" role="listbox" v-show="opened">
-      <template v-for="item in options" :key="item.value">
-        <button 
-          class="dropdown__item" 
-          :class="buttonClass"
-          role="option" 
-          type="button" 
-          @click="buttonClick(item.value)"
-        >
-          <ui-icon :icon="item.icon" class="dropdown__icon" v-if="iconExists" />
-          {{ item.text }}
-        </button>
-      </template>
+    <div v-show="opened" class="dropdown__menu" role="listbox">
+      <button
+        v-for="item in options"
+        :key="item.value"
+        class="dropdown__item"
+        :class="{ dropdown__item_icon: iconExists }"
+        role="option"
+        type="button"
+        @click="buttonClick(item.value)"
+      >
+        <ui-icon :icon="item.icon" class="dropdown__icon" v-if="iconExists" />
+        {{ item.text }}
+      </button>
     </div>
   </div>
 </template>
@@ -34,12 +29,6 @@ export default {
   name: 'UiDropdown',
 
   components: { UiIcon },
-
-  data() {
-    return {
-      opened: false,
-    }
-  },
 
   props: {
     options: {
@@ -55,7 +44,30 @@ export default {
       type: String,
       require: true,
     },
+  },
 
+  data() {
+    return {
+      opened: false,
+    };
+  },
+
+  computed: {
+    optionsItem() {
+      return this.options.find((item) => item.value === this.modelValue);
+    },
+    selected() {
+      return this.optionsItem?.['text'] || this.title;
+    },
+    iconExists() {
+      return this.options.some((item) => item['icon']);
+    },
+    icon() {
+      return this.optionsItem?.['icon'];
+    },
+    dropdownOpened() {
+      return this.opened ? 'dropdown_opened' : '';
+    },
   },
 
   methods: {
@@ -67,30 +79,6 @@ export default {
       this.opened = !this.opened;
     },
   },
-
-  computed: {
-    selected() {
-      var findItem = this.options.find(item => item.value === this.modelValue);
-      return (findItem) ? findItem.text : this.title;
-    },
-    iconExists() {
-      //return (this.options[0]?.['icon']) ? true : false; 
-      return this.options.find(item => item['icon']);
-    },
-    menuClass() {
-      return this.iconExists ? 'dropdown__toggle_icon' : ''; 
-    },
-    buttonClass() {
-      return this.iconExists ? 'dropdown__item_icon' : ''; 
-    },
-    icon () {
-      return this.options.find(item => item.value === this.modelValue)?.['icon'];
-    }, 
-    dropdownOpened() {
-      return this.opened ? 'dropdown_opened' : ''; 
-    },
-  },
-  
 };
 </script>
 

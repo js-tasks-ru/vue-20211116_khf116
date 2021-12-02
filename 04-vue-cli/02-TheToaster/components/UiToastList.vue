@@ -1,9 +1,6 @@
 <template>
   <div class="toasts">
-    <template v-for="toast in toasts" :key="toast.id">
-      <!-- <ui-toast :toast="toast" v-if="toast.visible" /> -->
-      <ui-toast :toast="toast" />
-    </template>    
+    <ui-toast v-for="toast in toasts" :key="toast.id" :toast="toast" />
   </div>
 </template>
 
@@ -13,16 +10,14 @@ import UiToast from './UiToast';
 export default {
   name: 'UiToastList',
 
+  components: { UiToast },
+
   props: {
     toasts: {
       type: Array,
       required: true,
     },
   },
-
-  components: { UiToast },
-
-
 };
 </script>
 
