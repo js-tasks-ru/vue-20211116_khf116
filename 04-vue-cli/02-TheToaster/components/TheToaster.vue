@@ -7,12 +7,16 @@
 <script>
 import UiToastList from './UiToastList';
 
+const toastHiddingDelay = 5000;
+
 export default {
   name: 'TheToaster',
 
   data() {
     return {
       toasts: [],
+      lastId: 0,
+      timerId: null,
     }
   },
 
@@ -21,17 +25,21 @@ export default {
   methods: {
 
     addToast(params) {
+      var id = ++this.lastId;
 
-      var id = this.toasts.length;
       this.toasts.push({
-        // пришлось добавить ключ, чтобы не ругался линтер в UiToastList на строке в <span v-for="toast in toasts" :key="toast.id" class="toast">
         id: id, 
         type: params.type,
-        message: params.message,
-        visible: true,        
+        message: params.message,  
+        delay: params.delay || toastHiddingDelay,
       });
 
-      setTimeout(() => this.toasts[id].visible = false, 5000);
+      setTimeout(function(arr, id) {
+        var index = arr.findIndex(item => item.id === id);
+        if (index >= 0) {
+          arr.splice(index, 1);
+        }         
+      }, toastHiddingDelay, this.toasts, id);      
     },
 
     success(message) {

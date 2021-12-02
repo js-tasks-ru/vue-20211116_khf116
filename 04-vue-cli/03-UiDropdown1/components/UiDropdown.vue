@@ -1,19 +1,28 @@
 <template>
-  <div class="dropdown dropdown_opened">
-    <button type="button" class="dropdown__toggle dropdown__toggle_icon">
-      <ui-icon icon="tv" class="dropdown__icon" />
-      <span>Title</span>
+  <div class="dropdown" :class="dropdownOpened">
+    <button 
+      type="button" 
+      class="dropdown__toggle"
+      :class="menuClass" 
+      @click="menuClick()"
+    >
+      <ui-icon :icon="icon" class="dropdown__icon" v-if="icon" />
+      <span>{{ selected }}</span>
     </button>
 
-    <div class="dropdown__menu" role="listbox">
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <ui-icon icon="tv" class="dropdown__icon" />
-        Option 1
-      </button>
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <ui-icon icon="tv" class="dropdown__icon" />
-        Option 2
-      </button>
+    <div class="dropdown__menu" role="listbox" v-show="opened">
+      <template v-for="item in options" :key="item.value">
+        <button 
+          class="dropdown__item" 
+          :class="buttonClass"
+          role="option" 
+          type="button" 
+          @click="buttonClick(item.value)"
+        >
+          <ui-icon :icon="item.icon" class="dropdown__icon" v-if="iconExists" />
+          {{ item.text }}
+        </button>
+      </template>
     </div>
   </div>
 </template>
@@ -25,6 +34,63 @@ export default {
   name: 'UiDropdown',
 
   components: { UiIcon },
+
+  data() {
+    return {
+      opened: false,
+    }
+  },
+
+  props: {
+    options: {
+      type: Array,
+      require: true,
+    },
+
+    modelValue: {
+      type: String,
+    },
+
+    title: {
+      type: String,
+      require: true,
+    },
+
+  },
+
+  methods: {
+    menuClick() {
+      this.opened = !this.opened;
+    },
+    buttonClick(value) {
+      this.$emit('update:modelValue', value);
+      this.opened = !this.opened;
+    },
+  },
+
+  computed: {
+    selected() {
+      var findItem = this.options.find(item => item.value === this.modelValue);
+      return (findItem) ? findItem.text : this.title;
+    },
+    iconExists() {
+      //return (this.options[0]?.['icon']) ? true : false; 
+      return this.options.find(item => item['icon']);
+    },
+    menuClass() {
+      return this.iconExists ? 'dropdown__toggle_icon' : ''; 
+    },
+    buttonClass() {
+      return this.iconExists ? 'dropdown__item_icon' : ''; 
+    },
+    icon () {
+      return this.options.find(item => item.value === this.modelValue)?.['icon'];
+    }, 
+    dropdownOpened() {
+      return this.opened ? 'dropdown_opened' : ''; 
+    },
+  },
+  
 };
 </script>
 

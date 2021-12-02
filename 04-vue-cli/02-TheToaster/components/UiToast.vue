@@ -2,7 +2,7 @@
   <!-- <div :class="toastClass" v-if="isVisible"> -->
   <div class="toast" :class="toastClass">
     <ui-icon class="toast__icon" :icon="toastIcon" />
-    <span>{{ item.message }}</span>
+    <span>{{ toast.message }}</span>
   </div>
 </template>
 
@@ -33,7 +33,7 @@ export default {
   // },
 
   props: {
-    item: {
+    toast: {
       type: Object,
       required: true,
     },
@@ -59,11 +59,11 @@ export default {
   computed: {
 
     toastIcon() {
-      return toastIcons[this.item.type];
+      return toastIcons[this.toast.type];
     },
 
     toastClass() {
-      return toastClasses[this.item.type];
+      return toastClasses[this.toast.type];
     },
 
     // delayValue() {

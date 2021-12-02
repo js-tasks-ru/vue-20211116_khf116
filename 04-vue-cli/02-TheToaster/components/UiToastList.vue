@@ -1,8 +1,9 @@
 <template>
   <div class="toasts">
-    <span v-for="toast in toasts" :key="toast.id">
-      <ui-toast :item="toast" v-if="toast.visible" />
-    </span>    
+    <template v-for="toast in toasts" :key="toast.id">
+      <!-- <ui-toast :toast="toast" v-if="toast.visible" /> -->
+      <ui-toast :toast="toast" />
+    </template>    
   </div>
 </template>
 
