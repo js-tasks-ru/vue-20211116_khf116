@@ -42,7 +42,7 @@ export default {
 
   methods: {
     handleSubmit() {
-      const from = this.$route.query?.['from'];
+      const from = this.$route.query['from'];
       if (from) {
         this.$router.push(from);
       } else {
