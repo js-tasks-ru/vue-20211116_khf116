@@ -2,14 +2,10 @@
   <component
     :is="tag"
     v-bind="$attrs"
-    v-if="isButton"
     :class="[buttonClass, block ? 'button_block' : '']"
     class="button"
-    :type="buttonType"
+    :[buttonTypeArg]="buttonType"
   >
-    <slot />
-  </component>
-  <component :is="tag" v-bind="$attrs" v-else :class="[buttonClass, block ? 'button_block' : '']" class="button">
     <slot />
   </component>
 </template>
@@ -39,10 +35,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    // type: {
-    //   type: String,
-    //   default: 'button',
-    // },
   },
 
   computed: {
@@ -55,10 +47,9 @@ export default {
       if (this.tag === 'button') return 'button';
 
       return 'none';
-      // return this.tag === 'button' ? 'button' : '';
     },
-    isButton() {
-      return this.tag === 'button';
+    buttonTypeArg() {
+      return this.tag === 'button' ? 'type' : null;
     },
   },
 };
