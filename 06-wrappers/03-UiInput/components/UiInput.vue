@@ -59,6 +59,9 @@ export default {
     modelValue: {
       type: String,
     },
+    // modelModifiers: {
+    //   default: () => ({}),
+    // },
   },
 
   emits: ['update:modelValue'],
@@ -72,6 +75,9 @@ export default {
         this.$emit('update:modelValue', value);
       },
     },
+    // isLazy() {
+    //   return this.modelModifiers['lazy'] ? 'lazy' : 'lazy';
+    // },
   },
 
   methods: {
