@@ -15,20 +15,22 @@
       v-if="multiline"
       v-bind="$attrs"
       ref="input"
-      v-model="customModel"
+      :value="modelValue"
       class="form-control"
       :class="{ 'form-control_rounded': rounded, 'form-control_sm': small }"
+      @input="$emit('update:modelValue', $event.target.value)"
     />
     <input
       v-else
       v-bind="$attrs"
       ref="input"
-      v-model="customModel"
+      :value="modelValue"
       class="form-control"
       :class="{
         'form-control_rounded': rounded,
         'form-control_sm': small,
       }"
+      @[modelEvent]="$emit('update:modelValue', $event.target.value)"
     />
 
     <div v-if="$slots['right-icon']" class="input-group__icon">
@@ -59,25 +61,17 @@ export default {
     modelValue: {
       type: String,
     },
-    // modelModifiers: {
-    //   default: () => ({}),
-    // },
+    modelModifiers: {
+      default: () => ({}),
+    },
   },
 
   emits: ['update:modelValue'],
 
   computed: {
-    customModel: {
-      get() {
-        return this.modelValue;
-      },
-      set(value) {
-        this.$emit('update:modelValue', value);
-      },
+    modelEvent() {
+      return this.modelModifiers['lazy'] ? 'change' : 'input';
     },
-    // isLazy() {
-    //   return this.modelModifiers['lazy'] ? 'lazy' : 'lazy';
-    // },
   },
 
   methods: {
