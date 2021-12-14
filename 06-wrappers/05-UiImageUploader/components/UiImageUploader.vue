@@ -1,8 +1,27 @@
 <template>
   <div class="image-uploader">
-    <label class="image-uploader__preview image-uploader__preview-loading" style="--bg-url: url('/link.jpeg')">
+    <label v-if="imageOrPreview" class="image-uploader__preview" :style="`--bg-url: url('${imageOrPreview}')`">
+      <span class="image-uploader__text">Удалить изображение</span>
+      <input type="none" class="image-uploader__input" @click="removeImage" />
+    </label>
+    <label
+      v-else-if="isUploading"
+      class="image-uploader__preview image-uploader__preview-loading"
+      :style="`--bg-url: url('${image}')`"
+    >
+      <span class="image-uploader__text">Загрузка...</span>
+      <input type="file" class="image-uploader__input" @click.prevent />
+    </label>
+    <label v-else class="image-uploader__preview">
       <span class="image-uploader__text">Загрузить изображение</span>
-      <input type="file" accept="image/*" class="image-uploader__input" />
+      <input
+        v-bind="$attrs"
+        :value="image"
+        type="file"
+        accept="image/*"
+        class="image-uploader__input"
+        @change="onFileChange"
+      />
     </label>
   </div>
 </template>
@@ -10,6 +29,80 @@
 <script>
 export default {
   name: 'UiImageUploader',
+
+  inheritAttrs: false,
+
+  props: {
+    preview: {
+      type: String,
+    },
+    uploader: {
+      type: Function,
+    },
+  },
+
+  emits: {
+    remove: null,
+    upload: null,
+    select: null,
+    error: null,
+  },
+
+  data() {
+    return {
+      image: null,
+      isUploading: false,
+    };
+  },
+
+  computed: {
+    imageOrPreview() {
+      return !this.isUploading && (this.preview || this.image);
+    },
+  },
+
+  // watch: {
+  //   image: {
+  //     immediate: true,
+  //     handler() {
+  //       console.log(this.image);
+  //     },
+  //   },
+  // },
+
+  methods: {
+    removeImage() {
+      this.image = null;
+      this.$emit('remove');
+    },
+    onFileChange(e) {
+      const files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+
+      const file = files[0];
+
+      this.$emit('select', file);
+
+      if (this.uploader) {
+        this.isUploading = true;
+        this.image = URL.createObjectURL(file);
+        this.uploader(file).then(
+          (result) => {
+            this.isUploading = false;
+
+            this.$emit('upload', result);
+          },
+          (error) => {
+            this.isUploading = false;
+            this.image = null;
+            this.$emit('error', error);
+          },
+        );
+      } else {
+        this.image = URL.createObjectURL(file);
+      }
+    },
+  },
 };
 </script>
 
