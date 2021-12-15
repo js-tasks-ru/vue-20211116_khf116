@@ -1,6 +1,21 @@
 <template>
   <div class="image-uploader">
-    <label v-if="imageOrPreview" class="image-uploader__preview" :style="`--bg-url: url('${imageOrPreview}')`">
+    <label
+      class="image-uploader__preview"
+      :class="{ 'image-uploader__preview-loading': isUploading }"
+      :style="imageOrPreview && `--bg-url: url('${imageOrPreview}')`"
+    >
+      <span class="image-uploader__text">{{ uploaderText }}</span>
+      <input
+        v-bind="$attrs"
+        :value="uploaderValue"
+        :type="uploaderType"
+        accept="image/*"
+        class="image-uploader__input"
+        @[uploaderEvent].prevent="imageChange"
+      />
+    </label>
+    <!-- <label v-if="imageOrPreview" class="image-uploader__preview" :style="`--bg-url: url('${imageOrPreview}')`">
       <span class="image-uploader__text">Удалить изображение</span>
       <input type="none" class="image-uploader__input" @click="removeImage" />
     </label>
@@ -22,7 +37,7 @@
         class="image-uploader__input"
         @change="onFileChange"
       />
-    </label>
+    </label> -->
   </div>
 </template>
 
@@ -50,7 +65,7 @@ export default {
 
   data() {
     return {
-      image: null,
+      image: undefined,
       isUploading: false,
     };
   },
@@ -59,20 +74,42 @@ export default {
     imageOrPreview() {
       return !this.isUploading && (this.preview || this.image);
     },
+    uploaderText() {
+      if (this.imageOrPreview) return 'Удалить изображение';
+      else if (this.isUploading) return 'Загрузка...';
+      else return 'Загрузить изображение';
+    },
+    uploaderEvent() {
+      if (this.imageOrPreview) return 'click';
+      else if (this.isUploading) return 'click';
+      else return 'change';
+    },
+    uploaderValue: {
+      get() {
+        return undefined;
+      },
+      set() {
+        return;
+      },
+    },
+    uploaderType() {
+      if (this.imageOrPreview) return 'none';
+      else return 'file';
+    },
   },
 
   // watch: {
-  //   image: {
+  //   preview: {
   //     immediate: true,
   //     handler() {
-  //       console.log(this.image);
+  //       this.isRemoving = false;
   //     },
   //   },
   // },
 
   methods: {
     removeImage() {
-      this.image = null;
+      this.image = undefined;
       this.$emit('remove');
     },
     onFileChange(e) {
@@ -94,13 +131,18 @@ export default {
           },
           (error) => {
             this.isUploading = false;
-            this.image = null;
+            this.image = undefined;
             this.$emit('error', error);
           },
         );
       } else {
         this.image = URL.createObjectURL(file);
       }
+    },
+    imageChange(e) {
+      if (this.imageOrPreview) this.removeImage();
+      else if (this.isUploading) return;
+      else this.onFileChange(e);
     },
   },
 };
