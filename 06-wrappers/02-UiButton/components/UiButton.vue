@@ -2,7 +2,12 @@
   <component
     :is="tag"
     v-bind="$attrs"
-    :class="[buttonClass, block ? 'button_block' : '']"
+    :class="{
+      button_primary: variant === 'primary',
+      button_secondary: variant === 'secondary',
+      button_danger: variant === 'danger',
+      button_block: block,
+    }"
     class="button"
     :[buttonTypeArg]="buttonType"
   >
