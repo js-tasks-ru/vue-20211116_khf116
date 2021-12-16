@@ -15,29 +15,6 @@
         @[uploaderEvent].prevent="imageChange"
       />
     </label>
-    <!-- <label v-if="imageOrPreview" class="image-uploader__preview" :style="`--bg-url: url('${imageOrPreview}')`">
-      <span class="image-uploader__text">Удалить изображение</span>
-      <input type="none" class="image-uploader__input" @click="removeImage" />
-    </label>
-    <label
-      v-else-if="isUploading"
-      class="image-uploader__preview image-uploader__preview-loading"
-      :style="`--bg-url: url('${image}')`"
-    >
-      <span class="image-uploader__text">Загрузка...</span>
-      <input type="file" class="image-uploader__input" @click.prevent />
-    </label>
-    <label v-else class="image-uploader__preview">
-      <span class="image-uploader__text">Загрузить изображение</span>
-      <input
-        v-bind="$attrs"
-        :value="image"
-        type="file"
-        accept="image/*"
-        class="image-uploader__input"
-        @change="onFileChange"
-      />
-    </label> -->
   </div>
 </template>
 
@@ -97,15 +74,6 @@ export default {
       else return 'file';
     },
   },
-
-  // watch: {
-  //   preview: {
-  //     immediate: true,
-  //     handler() {
-  //       this.isRemoving = false;
-  //     },
-  //   },
-  // },
 
   methods: {
     removeImage() {
