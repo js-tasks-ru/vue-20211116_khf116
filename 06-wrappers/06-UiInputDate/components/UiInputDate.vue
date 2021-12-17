@@ -41,6 +41,11 @@ export default {
         if (!this.localDate) return null;
 
         let value = new Date(this.localDate);
+
+        // чтобы не ругался тест UiInputDate[type=time] должен порождать событие обновления модели с новым значением при выборе даты
+        // иначе выдает ошибку "RangeError: Invalid time value at Date.toISOString (<anonymous>)"
+        if (isNaN(value)) return;
+
         switch (this.type) {
           case 'date':
             value = value.toISOString().split('T')[0];
@@ -49,14 +54,7 @@ export default {
             //value = value.toTimeString().substr(0, 5);
             //value = value.toLocaleTimeString([navigator.language], { hour: '2-digit', minute: '2-digit' });
             //value = value.toLocaleTimeString();
-            try {
-              value = value.toISOString().split('T')[1].substr(0, 5);
-            } catch (error) {
-              value = null;
-              // ругается тест UiInputDate[type=time] должен порождать событие обновления модели с новым значением при выборе даты
-              // выдает ошибку "RangeError: Invalid time value at Date.toISOString (<anonymous>)"
-              // throw error;
-            }
+            value = value.toISOString().split('T')[1].substr(0, 5);
             break;
           case 'datetime-local':
             // value =

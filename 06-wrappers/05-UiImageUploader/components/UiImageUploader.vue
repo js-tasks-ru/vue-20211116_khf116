@@ -3,7 +3,7 @@
     <label
       class="image-uploader__preview"
       :class="{ 'image-uploader__preview-loading': isUploading }"
-      :style="imageOrPreview && `--bg-url: url('${imageOrPreview}')`"
+      :style="imageOrPreview && isUploading && `--bg-url: url('${imageOrPreview}')`"
     >
       <span class="image-uploader__text">{{ uploaderText }}</span>
       <input
@@ -44,21 +44,22 @@ export default {
     return {
       image: undefined,
       isUploading: false,
+      localPreview: '',
     };
   },
 
   computed: {
     imageOrPreview() {
-      return !this.isUploading && (this.preview || this.image);
+      return this.localPreview || this.image;
     },
     uploaderText() {
-      if (this.imageOrPreview) return 'Удалить изображение';
-      else if (this.isUploading) return 'Загрузка...';
+      if (this.isUploading) return 'Загрузка...';
+      else if (this.imageOrPreview) return 'Удалить изображение';
       else return 'Загрузить изображение';
     },
     uploaderEvent() {
-      if (this.imageOrPreview) return 'click';
-      else if (this.isUploading) return 'click';
+      if (this.isUploading) return 'click';
+      else if (this.imageOrPreview) return 'click';
       else return 'change';
     },
     uploaderValue: {
@@ -70,15 +71,32 @@ export default {
       },
     },
     uploaderType() {
-      if (this.imageOrPreview) return 'none';
+      if (this.isUploading || this.imageOrPreview) return 'none';
       else return 'file';
     },
+  },
+
+  watch: {
+    preview: {
+      deep: true,
+      immediate: true,
+      handler() {
+        this.localPreview = this.preview;
+      },
+    },
+    // localPreview: {
+    //   deep: true,
+    //   handler() {
+    //     if (!this.localPreview && this.preview) this.$emit('remove');
+    //   },
+    // },
   },
 
   methods: {
     removeImage() {
       this.image = undefined;
       this.$emit('remove');
+      this.localPreview = '';
     },
     onFileChange(e) {
       const files = e.target.files || e.dataTransfer.files;
@@ -108,8 +126,8 @@ export default {
       }
     },
     imageChange(e) {
-      if (this.imageOrPreview) this.removeImage();
-      else if (this.isUploading) return;
+      if (this.isUploading) return;
+      else if (this.imageOrPreview) this.removeImage();
       else this.onFileChange(e);
     },
   },
