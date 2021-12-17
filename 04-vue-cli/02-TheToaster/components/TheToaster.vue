@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ui-toast-list :toasts="toasts" />
+    <ui-toast-list :toasts="toasts" @toastClick="delToast($event)" />
   </div>
 </template>
 
@@ -12,56 +12,61 @@ const toastHiddingDelay = 5000;
 export default {
   name: 'TheToaster',
 
+  components: { UiToastList },
+
   data() {
     return {
       toasts: [],
       lastId: 0,
       timerId: null,
-    }
+    };
   },
 
-  components: { UiToastList },
-
   methods: {
-
     addToast(params) {
-      var id = ++this.lastId;
+      const id = ++this.lastId;
+      const delay = params['delay'] || toastHiddingDelay;
 
       this.toasts.push({
-        id: id, 
+        id: id,
         type: params.type,
-        message: params.message,  
-        delay: params.delay || toastHiddingDelay,
+        message: params.message,
+        delay: delay,
       });
 
-      setTimeout(function(arr, id) {
-        var index = arr.findIndex(item => item.id === id);
-        if (index >= 0) {
-          arr.splice(index, 1);
-        }         
-      }, toastHiddingDelay, this.toasts, id);      
+      setTimeout(
+        function (toasts, id) {
+          if (toasts) toasts.delToast(id);
+        },
+        delay,
+        this,
+        id,
+      );
+    },
+
+    delToast(id) {
+      let index = this.toasts.findIndex((item) => item['id'] === id);
+      if (index >= 0) this.toasts.splice(index, 1);
     },
 
     success(message) {
       this.addToast({
         type: 'success',
         message: message,
-      })
+      });
     },
 
     error(message) {
       this.addToast({
         type: 'error',
         message: message,
-      })
+      });
     },
   },
-
 };
 </script>
 
 <style scoped>
-
 @media all and (min-width: 992px) {
   .toasts {
     bottom: 72px;

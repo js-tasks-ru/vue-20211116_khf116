@@ -1,6 +1,5 @@
 <template>
-  <!-- <div :class="toastClass" v-if="isVisible"> -->
-  <div class="toast" :class="toastClass">
+  <div class="toast" :class="toastClass" @click="toastClick">
     <ui-icon class="toast__icon" :icon="toastIcon" />
     <span>{{ toast.message }}</span>
   </div>
@@ -19,18 +18,10 @@ const toastClasses = {
   error: 'toast toast_error',
 };
 
-
 export default {
   name: 'UiToast',
 
   components: { UiIcon },
-
-  // data () {
-  //   return {
-  //     isVisible: true,
-  //     timerId: null,
-  //   }
-  // },
 
   props: {
     toast: {
@@ -38,46 +29,27 @@ export default {
       required: true,
     },
   },
-  
-  // mounted() {
-  //   this.startHiding();
-  // },
 
-  // methods: {    
-  //   startHiding() {
-  //     this.timerId = setTimeout(() => this.isVisible = false, this.delayValue);
-  //   },
-
-  //   hide() {
-  //     this.isVisible = false;
-  //     if (this.timerId)
-  //       clearTimeout(this.timerId);
-  //   }
-  // },
-
+  emits: ['toastClick'],
 
   computed: {
-
     toastIcon() {
       return toastIcons[this.toast.type];
     },
-
     toastClass() {
       return toastClasses[this.toast.type];
     },
-
-    // delayValue() {
-    //   return this.item.delay || 5000;
-    // },
-
   },
 
+  methods: {
+    toastClick() {
+      this.$emit('toastClick', this.toast.id);
+    },
+  },
 };
 </script>
 
 <style scoped>
-
-
 .toast {
   display: flex;
   flex: 0 0 auto;
