@@ -3,16 +3,16 @@
     <label
       class="image-uploader__preview"
       :class="{ 'image-uploader__preview-loading': isUploading }"
-      :style="imageOrPreview && isUploading && `--bg-url: url('${imageOrPreview}')`"
+      :style="imageOrPreview && `--bg-url: url('${imageOrPreview}')`"
     >
-      <span class="image-uploader__text">{{ uploaderText }}</span>
+      <span class="image-uploader__text">{{ text }}</span>
       <input
         v-bind="$attrs"
-        :value="uploaderValue"
-        :type="uploaderType"
+        :value="imageOrPreview"
+        :type="type"
         accept="image/*"
         class="image-uploader__input"
-        @[uploaderEvent].prevent="imageChange"
+        @[event].prevent="imageChange"
       />
     </label>
   </div>
@@ -52,26 +52,17 @@ export default {
     imageOrPreview() {
       return this.localPreview || this.image;
     },
-    uploaderText() {
+    text() {
       if (this.isUploading) return 'Загрузка...';
       else if (this.imageOrPreview) return 'Удалить изображение';
       else return 'Загрузить изображение';
     },
-    uploaderEvent() {
-      if (this.isUploading) return 'click';
-      else if (this.imageOrPreview) return 'click';
+    event() {
+      if (this.isUploading || this.imageOrPreview) return 'click';
       else return 'change';
     },
-    uploaderValue: {
-      get() {
-        return undefined;
-      },
-      set() {
-        return;
-      },
-    },
-    uploaderType() {
-      if (this.isUploading || this.imageOrPreview) return 'none';
+    type() {
+      if (this.isUploading || this.imageOrPreview) return undefined;
       else return 'file';
     },
   },
