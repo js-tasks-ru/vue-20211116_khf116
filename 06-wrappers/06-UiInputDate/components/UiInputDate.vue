@@ -7,7 +7,11 @@
 </template>
 
 <script>
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import UiInput from './UiInput';
+
+dayjs.extend(utc);
 
 export default {
   name: 'UiInputDate',
@@ -33,22 +37,17 @@ export default {
     value() {
       if (!this.modelValue) return null;
 
-      let value = new Date(this.modelValue);
-
-      // чтобы не ругался тест UiInputDate[type=time] должен порождать событие обновления модели с новым значением при выборе даты
-      // иначе выдает ошибку "RangeError: Invalid time value at Date.toISOString (<anonymous>)"
-      if (isNaN(value)) return;
+      let value;
 
       switch (this.type) {
         case 'date':
-          value = value.toISOString().split('T')[0];
+          value = dayjs.utc(this.modelValue).format('YYYY-MM-DD');
           break;
         case 'time':
-          value = value.toISOString().split('T')[1].substr(0, 5);
+          value = dayjs.utc(this.modelValue).format('HH:mm');
           break;
         case 'datetime-local':
-          value = value.toISOString();
-          value = value.split('T')[0] + 'T' + value.split('T')[1].substr(0, 5);
+          value = dayjs.utc(this.modelValue).format('YYYY-MM-DDTHH:mm');
           break;
         default:
           null;
