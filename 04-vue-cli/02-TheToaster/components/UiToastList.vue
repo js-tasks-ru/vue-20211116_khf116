@@ -1,6 +1,6 @@
 <template>
   <div class="toasts">
-    <ui-toast v-for="toast in toasts" :key="toast.id" :toast="toast" @toastClick="$emit('toastClick', $event)" />
+    <ui-toast v-for="toast in toasts" :key="toast.id" :toast="toast" @close="$emit('close', toast.id)" />
   </div>
 </template>
 
@@ -19,7 +19,7 @@ export default {
     },
   },
 
-  emits: ['toastClick'],
+  emits: ['close'],
 };
 </script>
 
