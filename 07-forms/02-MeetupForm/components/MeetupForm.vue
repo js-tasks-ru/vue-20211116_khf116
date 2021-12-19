@@ -23,7 +23,7 @@
             name="image"
             :preview="localMeetup.image"
             :value="imageToUpload"
-            @select="melocalMeetupetup.imageToUpload = $event"
+            @select="localMeetup.imageToUpload = $event"
             @remove="localMeetup.imageToUpload = null"
           />
         </ui-form-group>

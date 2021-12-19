@@ -12,7 +12,7 @@
         :type="type"
         accept="image/*"
         class="image-uploader__input"
-        @[event].prevent="imageChange"
+        @[change].prevent="imageChange"
       />
     </label>
   </div>
@@ -57,7 +57,7 @@ export default {
       else if (this.imageOrPreview) return 'Удалить изображение';
       else return 'Загрузить изображение';
     },
-    event() {
+    change() {
       if (this.isUploading || this.imageOrPreview) return 'click';
       else return 'change';
     },
