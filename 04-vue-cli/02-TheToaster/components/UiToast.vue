@@ -1,6 +1,6 @@
 <template>
-  <div class="toast" :class="toastClass" @click="toastClick">
-    <ui-icon class="toast__icon" :icon="toastIcon" />
+  <div class="toast" :class="classes" @click.prevent="$emit('close', toast.id)">
+    <ui-icon class="toast__icon" :icon="icon" />
     <span>{{ toast.message }}</span>
   </div>
 </template>
@@ -30,20 +30,14 @@ export default {
     },
   },
 
-  emits: ['toastClick'],
+  emits: ['close'],
 
   computed: {
-    toastIcon() {
+    icon() {
       return toastIcons[this.toast.type];
     },
-    toastClass() {
+    classes() {
       return toastClasses[this.toast.type];
-    },
-  },
-
-  methods: {
-    toastClick() {
-      this.$emit('toastClick', this.toast.id);
     },
   },
 };

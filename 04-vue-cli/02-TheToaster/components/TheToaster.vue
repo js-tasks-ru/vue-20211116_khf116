@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ui-toast-list :toasts="toasts" @toastClick="delToast($event)" />
+    <ui-toast-list :toasts="toasts" @close="toastRemove($event)" />
   </div>
 </template>
 
@@ -23,7 +23,7 @@ export default {
   },
 
   methods: {
-    addToast(params) {
+    toastAdd(params) {
       const id = ++this.lastId;
       const delay = params['delay'] || toastHiddingDelay;
 
@@ -36,7 +36,7 @@ export default {
 
       setTimeout(
         function (toasts, id) {
-          if (toasts) toasts.delToast(id);
+          if (toasts) toasts.toastRemove(id);
         },
         delay,
         this,
@@ -44,20 +44,20 @@ export default {
       );
     },
 
-    delToast(id) {
+    toastRemove(id) {
       let index = this.toasts.findIndex((item) => item['id'] === id);
       if (index >= 0) this.toasts.splice(index, 1);
     },
 
     success(message) {
-      this.addToast({
+      this.toastAdd({
         type: 'success',
         message: message,
       });
     },
 
     error(message) {
-      this.addToast({
+      this.toastAdd({
         type: 'error',
         message: message,
       });
@@ -73,5 +73,4 @@ export default {
     right: 112px;
   }
 }
-
 </style>
