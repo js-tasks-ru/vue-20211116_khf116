@@ -1,40 +1,41 @@
 <template>
   <fieldset class="agenda-item-form">
-    <button type="button" class="agenda-item-form__remove-button">
+    <button type="button" class="agenda-item-form__remove-button" @click.prevent="$emit('remove')">
       <ui-icon icon="trash" />
     </button>
 
     <ui-form-group>
-      <ui-dropdown title="Тип" :options="$options.agendaItemTypeOptions" name="type" />
+      <ui-dropdown v-model="localAgendaItem.type" title="Тип" :options="$options.agendaItemTypeOptions" name="type" />
     </ui-form-group>
 
     <div class="agenda-item-form__row">
       <div class="agenda-item-form__col">
         <ui-form-group label="Начало">
-          <ui-input type="time" placeholder="00:00" name="startsAt" />
+          <ui-input v-model="startsAt" type="time" placeholder="00:00" name="startsAt" />
         </ui-form-group>
       </div>
       <div class="agenda-item-form__col">
         <ui-form-group label="Окончание">
-          <ui-input type="time" placeholder="00:00" name="endsAt" />
+          <ui-input v-model="localAgendaItem.endsAt" type="time" placeholder="00:00" name="endsAt" />
         </ui-form-group>
       </div>
     </div>
 
-    <ui-form-group label="Заголовок">
-      <ui-input name="title" />
-    </ui-form-group>
-    <ui-form-group label="Описание">
-      <ui-input multiline name="description" />
+    <ui-form-group v-for="(value, name, index) in schema" :key="index" :label="value.label">
+      <component :is="value.component" v-model="localAgendaItem[name]" :name="name" v-bind="value.props" />
     </ui-form-group>
   </fieldset>
 </template>
 
 <script>
+import dayjs from 'dayjs';
+import objectSupport from 'dayjs/plugin/objectSupport';
 import UiIcon from './UiIcon';
 import UiFormGroup from './UiFormGroup';
 import UiInput from './UiInput';
 import UiDropdown from './UiDropdown';
+
+dayjs.extend(objectSupport);
 
 const agendaItemTypeIcons = {
   registration: 'key',
@@ -163,6 +164,46 @@ export default {
     agendaItem: {
       type: Object,
       required: true,
+    },
+  },
+
+  emits: ['update:agendaItem', 'remove'],
+
+  data() {
+    return {
+      localAgendaItem: { ...this.agendaItem },
+      startsAt: this.agendaItem.startsAt,
+    };
+  },
+
+  computed: {
+    schema() {
+      return agendaItemFormSchemas[this.localAgendaItem.type];
+    },
+  },
+
+  watch: {
+    localAgendaItem: {
+      deep: true,
+      handler() {
+        this.$emit('update:agendaItem', { ...this.localAgendaItem });
+      },
+    },
+    startsAt: {
+      handler(newValue, oldValue) {
+        this.localAgendaItem.startsAt = newValue;
+        if (this.getTime(oldValue) && this.getTime(this.localAgendaItem.endsAt)) {
+          const diffTime = this.getTime(newValue) - this.getTime(oldValue);
+          this.localAgendaItem.endsAt = dayjs(this.getTime(this.localAgendaItem.endsAt) + diffTime).format('HH:mm');
+        }
+      },
+    },
+  },
+
+  methods: {
+    getTime(value) {
+      if (value === '00:00') return null;
+      return dayjs({ hour: value.split(':')[0], minute: value.split(':')[1] });
     },
   },
 };
