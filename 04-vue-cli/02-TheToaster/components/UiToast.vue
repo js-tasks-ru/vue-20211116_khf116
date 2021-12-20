@@ -1,5 +1,5 @@
 <template>
-  <div class="toast" :class="classes" @click.prevent="$emit('close', toast.id)">
+  <div class="toast" :class="classes" @click.prevent="$emit('close')">
     <ui-icon class="toast__icon" :icon="icon" />
     <span>{{ toast.message }}</span>
   </div>
