@@ -11,7 +11,7 @@
     <div class="agenda-item-form__row">
       <div class="agenda-item-form__col">
         <ui-form-group label="Начало">
-          <ui-input v-model="startsAt" type="time" placeholder="00:00" name="startsAt" />
+          <ui-input v-model="localAgendaItem.startsAt" type="time" placeholder="00:00" name="startsAt" />
         </ui-form-group>
       </div>
       <div class="agenda-item-form__col">
@@ -105,7 +105,7 @@ export default {
   data() {
     return {
       localAgendaItem: { ...this.agendaItem },
-      startsAt: this.agendaItem.startsAt,
+      // startsAt: this.agendaItem.startsAt,
     };
   },
 
@@ -127,15 +127,23 @@ export default {
         this.$emit('update:agendaItem', { ...this.localAgendaItem });
       },
     },
-    startsAt: {
+    'localAgendaItem.startsAt': {
       handler(newValue, oldValue) {
-        this.localAgendaItem.startsAt = newValue;
         if (this.getTime(oldValue) && this.getTime(this.localAgendaItem.endsAt)) {
           const diffTime = this.getTime(newValue) - this.getTime(oldValue);
           this.localAgendaItem.endsAt = dayjs(this.getTime(this.localAgendaItem.endsAt) + diffTime).format('HH:mm');
         }
       },
     },
+    // startsAt: {
+    //   handler(newValue, oldValue) {
+    //     this.localAgendaItem.startsAt = newValue;
+    //     if (this.getTime(oldValue) && this.getTime(this.localAgendaItem.endsAt)) {
+    //       const diffTime = this.getTime(newValue) - this.getTime(oldValue);
+    //       this.localAgendaItem.endsAt = dayjs(this.getTime(this.localAgendaItem.endsAt) + diffTime).format('HH:mm');
+    //     }
+    //   },
+    // },
   },
 
   methods: {
